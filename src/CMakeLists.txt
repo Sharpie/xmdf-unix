@@ -32,7 +32,7 @@ SET( XMDF_SRCS
 
 # Set up definitions that affect source code compilation and add include
 # directories so header files can be located.
-INCLUDE_DIRECTORIES( ${XMDF_SOURCE_DIR} ${HDF5_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${HDF5_INCLUDE_DIR} )
 
 # This is disabled because the XMDF_API is a preprocessor macro that defines
 # DLL visibility for library functions. Setting DLL attributes on UNIX causes

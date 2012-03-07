@@ -28,6 +28,14 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT( XMDF )
 
+SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Default to a release build
+IF ( NOT CMAKE_BUILD_TYPE )
+  SET(CMAKE_BUILD_TYPE "Release")
+ENDIF ()
+
 # Gather library requirements-- these are a Fortran compiler and a recent
 # version of the HDF5 library.
 ENABLE_LANGUAGE( Fortran )
