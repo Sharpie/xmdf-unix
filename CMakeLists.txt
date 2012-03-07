@@ -31,8 +31,7 @@ PROJECT( XMDF )
 # Gather library requirements-- these are a Fortran compiler and a recent
 # version of the HDF5 library.
 ENABLE_LANGUAGE( Fortran )
-#SET( HDF5_USE_STATIC_LIBRARIES TRUE )
-FIND_PACKAGE( HDF5 1.8.1 REQUIRED )
+FIND_PACKAGE( HDF5 1.8.1 COMPONENTS C REQUIRED )
 
 
 # Descend into the src directory to build and install the library.

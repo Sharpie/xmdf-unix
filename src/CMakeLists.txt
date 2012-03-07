@@ -48,7 +48,8 @@ IF("${CMAKE_Fortran_COMPILER_ID}" MATCHES "Intel")
 ENDIF()
 
 
-ADD_LIBRARY( xmdf STATIC ${XMDF_SRCS} )
+ADD_LIBRARY( xmdf ${XMDF_SRCS} )
+TARGET_LINK_LIBRARIES( xmdf ${HDF5_LIBRARIES} )
 
 # Specify install location for the libraries which will be
 # prefix/library/install/location.  In this case the location for libraries is
