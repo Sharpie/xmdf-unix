@@ -28,6 +28,11 @@ Changes
 Compared to the original source code for XMDF version 1.9, the following
 changes have been made:
 
+#### XMDF-unix 1.9-2
+
+  * The Fortran module is now built and installed.
+
+  * Config files are installed that help other CMake-based projects use XMDF.
 
 #### XMDF-unix 1.9-1
 
