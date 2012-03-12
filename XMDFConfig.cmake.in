@@ -1,0 +1,13 @@
+#  XMDF_INCLUDE_DIRS  - Directories to include to use XMDF
+#  XMDF_LIBRARIES     - Files to link against to use XMDF
+
+SET(XMDF_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/include")
+
+# Contains a description of the XMDF library built by this project along with
+# any libraries that it depends on.
+INCLUDE("@CMAKE_INSTALL_PREFIX@/lib/cmake/XMDF-@XMDF_VERSION_STRING@/XMDFLibraryDepends.cmake")
+
+# Including the file above creates the "xmdf" target in any CMake project that
+# includes this file. Therefore, we can just store the target as the library
+# name to be passed to `TARGET_LINK_LIBRARIES`.
+SET(XMDF_LIBRARIES xmdf)

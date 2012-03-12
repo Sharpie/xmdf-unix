@@ -56,8 +56,10 @@ TARGET_LINK_LIBRARIES( xmdf ${HDF5_LIBRARIES} )
 # specified to be:
 #
 #     prefix/lib
+#
+# Also, export a description of this libray for use by other CMake scripts.
 INSTALL(
-  TARGETS xmdf
+  TARGETS xmdf EXPORT XMDFLibraryDepends
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )
