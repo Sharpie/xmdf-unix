@@ -77,7 +77,7 @@ SET_TARGET_PROPERTIES( xmdf
 )
 INSTALL(
   DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/fortran_modules/
-  DESTINATION include
+  DESTINATION include/xmdf
 )
 
 # Install C include files to prefix/include
@@ -85,5 +85,5 @@ INSTALL(
   FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Xmdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/ErrorDefinitions.h
-  DESTINATION include
+  DESTINATION include/xmdf
 )

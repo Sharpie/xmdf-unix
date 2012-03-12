@@ -1,7 +1,7 @@
 #  XMDF_INCLUDE_DIRS  - Directories to include to use XMDF
 #  XMDF_LIBRARIES     - Files to link against to use XMDF
 
-SET(XMDF_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/include")
+SET(XMDF_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/include/xmdf")
 
 # Contains a description of the XMDF library built by this project along with
 # any libraries that it depends on.
