@@ -32,7 +32,7 @@ SET( XMDF_SRCS
 
 # Set up definitions that affect source code compilation and add include
 # directories so header files can be located.
-INCLUDE_DIRECTORIES( ${HDF5_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${HDF5_INCLUDE_DIR} ${XMDF_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include )
 
 # This is disabled because the XMDF_API is a preprocessor macro that defines
 # DLL visibility for library functions. Setting DLL attributes on UNIX causes
@@ -79,8 +79,7 @@ INSTALL(
 
 # Install C include files to prefix/include
 INSTALL(
-  FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Xmdf.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/ErrorDefinitions.h
-  DESTINATION include/xmdf
+  DIRECTORY
+    ${XMDF_SOURCE_DIR}/include/xmdf
+  DESTINATION include
 )
