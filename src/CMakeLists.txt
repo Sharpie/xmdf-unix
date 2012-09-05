@@ -39,9 +39,6 @@ INCLUDE_DIRECTORIES( ${HDF5_INCLUDE_DIR} )
 # errors.
 ADD_DEFINITIONS( -DNO_XMDF_API )
 
-# This is required because XMDF uses the interface defined by HDF5 version 1.6
-ADD_DEFINITIONS( -DH5_USE_16_API ${HDF5_DEFINITIONS} )
-
 # Ifort requires lower case symbol names in order to cross-link.
 IF("${CMAKE_Fortran_COMPILER_ID}" MATCHES "Intel")
   ADD_DEFINITIONS( -DFLOWER )
