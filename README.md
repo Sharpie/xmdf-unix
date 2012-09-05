@@ -34,10 +34,25 @@ The CMake build system is available at:
 Changes
 -------
 
+### Releases based on XMDF 2.1
+
+#### XMDF-unix 2.1-1
+
+  * First release based on XMDF 2.1. No changes to the origional source code
+    have been made aside from the removal of calls to `H5Eget_free` as listed
+    under changes made to the 1.9 release.
+
+  * Header files are now installed to `include/xmdf/` instead of `include/`.
+
+  * The changelog, `changes.txt` from the XMDF project is now included as
+    `upstream-changelog.txt`.
+
+
 ### Releases based on XMDF 1.9
 
 Compared to the original source code for XMDF version 1.9, the following
 changes have been made:
+
 
 #### XMDF-unix 1.9-2
 
