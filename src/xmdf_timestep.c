@@ -33,10 +33,10 @@ DISCLAIMER:This work was prepared as an account of work sponsored by an agency o
 --------------------------------------------------------------------------
 */
 
-#include "Xmdf.h"
-#include "xmdf_private.h"
-#include "xmdf_timestep.h"
-#include "ErrorDefinitions.h"
+#include "xmdf/Xmdf.h"
+#include "xmdf/xmdf_private.h"
+#include "xmdf/xmdf_timestep.h"
+#include "xmdf/ErrorDefinitions.h"
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -610,8 +610,8 @@ XMDF_API int xftReadWriteDset2DFloatPortions (xid a_Id,
  
   return status;
 } /* xftReadWriteDset2DFloatPortions */
-XMDF_API int xftiSelect2DDatasetIndices(xid a_hdfDsetId, size_t a_nIndices,
-                                        hsize_t *a_indices2D, xid *a_spaceId)
+XMDF_API int xftiSelectDatasetIndices(xid a_hdfDsetId, size_t a_expectedRank,
+                 size_t a_nIndices, hsize_t *a_indices, xid *a_spaceId)
 {
   int       Rank;
   hsize_t   *Dims = NULL, *Maxdims = NULL;
@@ -629,7 +629,7 @@ XMDF_API int xftiSelect2DDatasetIndices(xid a_hdfDsetId, size_t a_nIndices,
     return ERROR_DATASET_INVALID;
   }
 
-  /* Make sure the rank is 2 */
+  /* Make sure the rank is a_expectedRank */
   status = xfpGetSimpleDataspaceInfo(*a_spaceId, &Rank, &Dims, &Maxdims);
   if (Dims) {
     free(Dims);
@@ -637,13 +637,13 @@ XMDF_API int xftiSelect2DDatasetIndices(xid a_hdfDsetId, size_t a_nIndices,
   if (Maxdims) {
     free(Maxdims);
   }
-  if (status < 0 || Rank != 2) {
+  if (status < 0 || Rank != a_expectedRank) {
     H5Sclose(*a_spaceId);
     return ERROR_DATASET_INVALID;
   }
 
   status = H5Sselect_elements(*a_spaceId, H5S_SELECT_SET, a_nIndices,
-                              (const hsize_t*)a_indices2D);
+                              (const hsize_t*)a_indices);
 
   if (status < 0) {
     H5Sclose(*a_spaceId);
@@ -657,12 +657,12 @@ XMDF_API int xftiSelect2DDatasetIndices(xid a_hdfDsetId, size_t a_nIndices,
   return 1;
 }
 /// --------------------------------------------------------------------------
-/// FUNCTION  xftReadWriteDset2DFloatIndices
+/// FUNCTION  xftReadWriteDsetFloatIndices
 /// --------------------------------------------------------------------------
-XMDF_API int xftReadWriteDset2DFloatIndices (xid a_Id,
+XMDF_API int xftReadWriteDsetFloatIndices (xid a_Id,
                 ReadWrite_enum a_readWrite, const char *a_Name,
-                size_t a_nIndices, hsize_t *a_indices2D,
-                float *a_Array)
+                size_t a_nIndices, hsize_t *a_indices,
+                int a_expectedRank, float *a_Array)
 {
   herr_t    status;
   xid       DatasetId, SpaceId = 0, MemspaceId, DatatypeId;
@@ -687,8 +687,8 @@ XMDF_API int xftReadWriteDset2DFloatIndices (xid a_Id,
     return ERROR_DATASET_INVALID;
   } 
 
-  status = xftiSelect2DDatasetIndices(DatasetId, a_nIndices, a_indices2D,
-                                      &SpaceId);
+  status = xftiSelectDatasetIndices(DatasetId, a_expectedRank, a_nIndices,
+                                      a_indices, &SpaceId);
   if (status < 0) {
     H5Dclose(DatasetId);
     return status;
@@ -719,7 +719,7 @@ XMDF_API int xftReadWriteDset2DFloatIndices (xid a_Id,
  
   return status;
 
-} // xftReadWriteDset2DFloatIndices
+} // xftReadWriteDsetFloatIndices
 /******************************************************************************
  * FUNCTION  xftReadDset2DIntPortion
  * PURPOSE   Read a portion of a 2D int array from an HDF5 dataset

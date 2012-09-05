@@ -47,8 +47,8 @@ DISCLAIMER:This work was prepared as an account of work sponsored by an agency o
  ******************************************************************************/
 
 
-#include "Xmdf.h"
-#include "xmdf_private.h"
+#include "xmdf/Xmdf.h"
+#include "xmdf/xmdf_private.h"
 #include <stdlib.h>
 #include <string.h>
 

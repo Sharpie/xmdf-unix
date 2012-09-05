@@ -56,7 +56,7 @@ DISCLAIMER:This work was prepared as an account of work sponsored by an agency o
 
 /* XMDF version number */
 /* Single precision float */ 
-#define XMDF_VERSION  1.9
+#define XMDF_VERSION  2.1
 
 
 #include <hdf5.h>
@@ -823,9 +823,6 @@ XMDF_API int xfReadVectorValuesTimestepFloat(xid a_Id,
 XMDF_API int xfReadVectorValuesTimestepFloatPortion(xid a_Id, 
                     int a_TimestepIndex, int a_Start, int a_NumVals,
                     int a_NumComponents, float *a_Values);
-XMDF_API int xfReadVectorValuesTimestepDouble(xid a_Id, 
-                    int a_TimestepIndex, int a_NumVals, int a_NumComponents, 
-                    double *a_Values);
 XMDF_API int xfReadVectorValuesAtIndex(xid a_Id, int a_Index, 
                     int a_FirstTime, int a_NumTimes, int a_NumComponents,
                     float *a_Values);
@@ -835,6 +832,15 @@ XMDF_API int xfReadVectorValuesTimestepDoublePortion (xid a_Id,
 XMDF_API int xfReadVectorValuesAtIndexFloat(xid a_Id, int a_Index,
                     int a_FirstTime, int a_NumTimes, int a_NumComponents,
                     float *a_Values);
+XMDF_API int xfReadVectorValuesTimestepDouble(xid a_Id, 
+                    int a_TimestepIndex, int a_NumVals, int a_NumComponents, 
+                    double *a_Values);
+XMDF_API int xfReadVectorValuesAtIndices(xid a_Id, 
+                    int a_nIndices, const int *a_Indices, int a_FirstTime,
+                    int a_NumTimes, int a_NumComponents, float *a_Values);
+XMDF_API int xfReadVectorValuesAtIndicesFloat(xid a_Id, 
+                    int a_nIndices, const int *a_Indices, int a_FirstTime,
+                    int a_NumTimes, int a_NumComponents, float *a_Values);
 
 XMDF_API int xfReadActivityTimestep(xid a_Id, int Index, int NumActive,
                     xmbool *Active);

@@ -36,11 +36,11 @@ DISCLAIMER:This work was prepared as an account of work sponsored by an agency o
 --------------------------------------------------------------------------
 */
 
-#include "Xmdf.h"
-#include "xmdf_private.h"
-#include "xmdf_timestep.h"
+#include "xmdf/Xmdf.h"
+#include "xmdf/xmdf_private.h"
+#include "xmdf/xmdf_timestep.h"
 #include "hdf5.h"
-#include "ErrorDefinitions.h"
+#include "xmdf/ErrorDefinitions.h"
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -109,12 +109,16 @@ static int xfiReadVectorValuesTimestepPortion(xid a_Id, int a_TimestepIndex,
                                                 int a_Start, int a_NumVals,
                                                 int a_NumComponents, 
                                                 double *a_dValues, float *a_fValues);
-int xfiReadWriteScalarValuesFloatAtIndices (xid a_Id, 
+static int xfiReadWriteScalarValuesFloatAtIndices (xid a_Id, 
                     ReadWrite_enum a_readWrite,
                     int a_nIndices, const int *a_Indices, int a_FirstTime,
                     int a_NumTimes, float *a_Values);
 static void xfiGetParIndexFromIndex(xid a_Id, int a_TimestepIndex,
                              int a_index, int *a_parindex);
+static int xfiReadWriteVectorValuesFloatAtIndices(xid a_Id, 
+                         ReadWrite_enum a_readWrite,
+                         int a_nIndices, const int *a_Indices, int a_FirstTime,
+                         int a_NumTimes, int a_nComponents, float *a_Values);
 int xfpCreateDset (xid a_Id, const char *a_Name,
                 const XDatasetParams *a_Params, hid_t a_hdfType, xid *a_DsetId);
 int xftExtendDset2DFirstDim (xid a_Id, const char *a_Name, 
@@ -10111,13 +10115,13 @@ XMDF_API int xfReadScalarValuesAtIndexInt (xid a_Id,
   }
 
   return status;
-} /* xfReadScalarValuesAtIndex */
+} /* xfReadScalarValuesAtIndexInt */
 /******************************************************************************/
 /*   FUNCTION  xfiReadWriteScalarValuesFloatAtIndices */
 /*! PURPOSE:   Read the scalar values for a specific index
  *   - NOTES:     a_Values must already be allocated of size a_NumTimes.      */
 /******************2***********************************************************/
-int xfiReadWriteScalarValuesFloatAtIndices (xid a_Id, 
+static int xfiReadWriteScalarValuesFloatAtIndices (xid a_Id, 
                     ReadWrite_enum a_readWrite,
                     int a_nIndices, const int *a_Indices, int a_FirstTime,
                     int a_NumTimes, float *a_Values)
@@ -10148,45 +10152,10 @@ int xfiReadWriteScalarValuesFloatAtIndices (xid a_Id,
       ++pos2D;
     }
   }
-  status = xftReadWriteDset2DFloatIndices (a_Id, a_readWrite,
-              DATASET_DSET_VALUES, numIndices2D, indices2D, a_Values);
+  status = xftReadWriteDsetFloatIndices (a_Id, a_readWrite,
+              DATASET_DSET_VALUES, numIndices2D, indices2D, 2, a_Values);
 
   free(indices2D);
-
-
-  //size_t a_nIndices, hsize_t *a_indices2D
-  //int    status = 1;
-  //hssize_t   *Start1 = NULL, *Start2 = NULL;
-  //hsize_t    *Num1 = NULL, *Num2 = NULL;
-  //int    i;
-
-  ///* make sure group is a dataset group */
-  //if (!xfpIsGroupOfType(a_Id, GROUP_TYPE_DATASET_SCALAR)) {
-  //  return ERROR_DATASET_INVALID;
-  //}
-
-  ///* allocate and fill in start and num arrays */
-  //Start1 = (hssize_t *)malloc(a_nIndices*sizeof(hssize_t));
-  //Num1   = (hsize_t *)malloc(a_nIndices*sizeof(hsize_t));
-
-  //Start2 = (hssize_t *)malloc(a_nIndices*sizeof(hssize_t));
-  //Num2   = (hsize_t *)malloc(a_nIndices*sizeof(hsize_t));
-
-  //for (i = 0; i < a_nIndices; i++) {
-  //  Start1[i] = a_FirstTime - 1;
-  //  Num1[i] = a_NumTimes;
-  //  Start2[i] = a_Indices[i] - 1;
-  //  Num2[i] = 1;
-  //}
-
-  //status = xftReadWriteDset2DFloatPortions(a_Id, a_readWrite,
-  //            DATASET_DSET_VALUES, a_nIndices,
-  //            Start1, Num1, Start2, Num2, a_Values);
-
-  //free(Start1);
-  //free(Num1);
-  //free(Start2);
-  //free(Num2);
 
   return status;
 } /* xfiReadWriteScalarValuesFloatAtIndices */
@@ -10550,6 +10519,74 @@ XMDF_API int xfReadVectorValuesAtIndexDouble (xid a_Id, int a_Index,
 
   return status;
 } /* xfReadVectorValuesAtIndexDouble */
+/******************************************************************************/
+/*   FUNCTION  xfiReadWriteVectorValuesFloatAtIndices */
+/*! PURPOSE:   Read the scalar values for a specific index
+ *   - NOTES:     a_Values must already be allocated of size a_NumTimes.      */
+/******************2***********************************************************/
+static int xfiReadWriteVectorValuesFloatAtIndices (xid a_Id, 
+                         ReadWrite_enum a_readWrite,
+                         int a_nIndices, const int *a_Indices, int a_FirstTime,
+                         int a_NumTimes, int a_nComponents, float *a_Values)
+{
+  xid status = -1;
+  size_t numIndices3D;
+  hsize_t *indices3D=NULL;
+  size_t pos3D;
+  int iTime;
+  int index;
+  int timeIndex;
+  int component;
+
+  /* make sure group is a dataset group */
+  if (!xfpIsGroupOfType(a_Id, GROUP_TYPE_DATASET_VECTOR)) {
+    return ERROR_DATASET_INVALID;
+  }
+
+  numIndices3D = a_nIndices*a_NumTimes*a_nComponents; 
+    // 2 for the # of indices for dataset
+  indices3D = (hsize_t*)malloc(numIndices3D*a_nComponents*2*sizeof(hsize_t));
+  pos3D = 0;
+  for (iTime = 0; iTime < a_NumTimes; ++iTime) {
+    timeIndex = iTime + a_FirstTime - 1;
+    for (index = 0; index < a_nIndices; ++index) {
+      for (component = 0; component < a_nComponents; ++component) {
+        indices3D[pos3D] = timeIndex;
+        ++pos3D;
+        indices3D[pos3D] = a_Indices[index] - 1;
+        ++pos3D;
+        indices3D[pos3D] = component;
+        ++pos3D;
+      }
+    }
+  }
+  status = xftReadWriteDsetFloatIndices (a_Id, a_readWrite,
+        DATASET_DSET_VALUES, numIndices3D, indices3D, 3, a_Values);
+
+  free(indices3D);
+
+  return status;
+} /* xfiReadWriteVectorValuesFloatAtIndices */
+/******************************************************************************/
+/*   FUNCTION  xfReadVectorValuesAtIndices */
+/*! PURPOSE:   Read the vector values for a specific index
+ *   - NOTES:     a_Values must already be allocated of size a_NumTimes.      */
+/******************2***********************************************************/
+XMDF_API int xfReadVectorValuesAtIndices (xid a_Id, 
+                    int a_nIndices, const int *a_Indices, int a_FirstTime,
+                    int a_NumTimes, int a_NumComponents, float *a_Values)
+{
+  return xfiReadWriteVectorValuesFloatAtIndices (a_Id, RW_READ,
+    a_nIndices, a_Indices, a_FirstTime, a_NumTimes, a_NumComponents, a_Values);
+} /* xfReadVectorValuesAtIndices */
+/*!***** (OVERLOAD) ************************************************************/
+XMDF_API int xfReadVectorValuesAtIndicesFloat (xid a_Id, 
+                    int a_nIndices, const int *a_Indices, int a_FirstTime,
+                    int a_NumTimes, int a_NumComponents, float *a_Values)
+{
+  return xfReadVectorValuesAtIndices(a_Id, a_nIndices, a_Indices, a_FirstTime,
+                                     a_NumTimes, a_NumComponents, a_Values);
+}
 /* --------------------------------------------------------------------------- */
 /* FUNCTION  xfScalarDataLocation */
 /*! PURPOSE:

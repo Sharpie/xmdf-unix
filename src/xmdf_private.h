@@ -39,7 +39,7 @@ DISCLAIMER:This work was prepared as an account of work sponsored by an agency o
 /* WARNING: This file is intended to be used only by EMRL emplyees.  
            The contents and function calls may change without warning.*/
 
-#include "Xmdf.h"
+#include "xmdf/Xmdf.h"
 
 /* Constants/enums */
 #define XFBitOn(flags, bit) ((flags) |= (bit))

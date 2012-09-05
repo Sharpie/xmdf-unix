@@ -32,9 +32,9 @@ This work was partially produced at the University of California, Lawrence Liver
 DISCLAIMER:This work was prepared as an account of work sponsored by an agency of the United States Government.  Neither the United States Government nor the University of California nor any of their employees, makes any warranty, express or implied, or assumes any liability or responsibility for the accuracy, completeness, or usefulness of any information, apparatus, product, or process disclosed, or represents that its use would not infringe privately-owned rights.  Reference herein to any specific commercial products, process, or service by trade name, trademark, manufacturer, or otherwise, does not necessarily constitute or imply its endorsement, recommendation, or favoring by the United States Government or the University of California.  The views and opinions of authors expressed herein do not necessarily state or reflect those of the United States Government or the University of California, and shall not be used for advertising or product endorsement purposes.
 --------------------------------------------------------------------------
 */
-#include "Xmdf.h"
-#include "xmdf_private.h"
-#include "ErrorDefinitions.h"
+#include "xmdf/Xmdf.h"
+#include "xmdf/xmdf_private.h"
+#include "xmdf/ErrorDefinitions.h"
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -149,7 +149,7 @@ NOTES
 ----------------------------------------------------------------------------*/
 XMDF_API herr_t xfpHDF5ErrorHandler (void* client_data)
 {
-  H5Ewalk(H5E_WALK_UPWARD, xfpHDF5ErrorWalk_cb, NULL);
+  H5Ewalk(H5E_DEFAULT, H5E_WALK_UPWARD, xfpHDF5ErrorWalk_cb, NULL);
   return 0;
 } /* xfpHDF5ErrorHandler */
 /* ---------------------------------------------------------------------------
@@ -183,8 +183,8 @@ XMDF_API herr_t xfpHDF5ErrorWalk_cb (int n, H5E_error_t *err_desc,
        indent*2, "", err_desc->min_num, min_str);
   xfpAddXMDFError(error);
 
-  free(maj_str);
-  free(min_str);
+  H5Eget_free(maj_str);
+  H5Eget_free(min_str);
 
   return 0;
 } /* xfpHDF5ErrorWalk_cb */
