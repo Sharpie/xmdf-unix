@@ -57,8 +57,8 @@ TARGET_LINK_LIBRARIES( xmdf ${HDF5_LIBRARIES} )
 # Also, export a description of this libray for use by other CMake scripts.
 INSTALL(
   TARGETS xmdf EXPORT XMDFLibraryDepends
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 
@@ -74,12 +74,12 @@ SET_TARGET_PROPERTIES( xmdf
 )
 INSTALL(
   DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/fortran_modules/
-  DESTINATION include/xmdf
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xmdf
 )
 
 # Install C include files to prefix/include
 INSTALL(
   DIRECTORY
     ${XMDF_SOURCE_DIR}/include/xmdf
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
