@@ -25,11 +25,15 @@
 # Therefore the minimum version is set to 2.8 but this is a "soft constraint"
 # Since this project uses Fortran source code, CMake >= 2.6 is probably a hard
 # constraint as that is when Fortran support was finalized in CMake.
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 PROJECT( XMDF )
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+#get GNU compliant install locations
+INCLUDE(GNUInstallDirs)
+
 
 # Default to a release build
 IF ( NOT CMAKE_BUILD_TYPE )
@@ -68,18 +72,18 @@ CONFIGURE_FILE(
 
 INSTALL(
   EXPORT XMDFLibraryDepends
-  DESTINATION "lib/cmake/XMDF-${XMDF_VERSION_STRING}"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/XMDF-${XMDF_VERSION_STRING}"
   COMPONENT dev
 )
 
 INSTALL(
   FILES "${XMDF_BINARY_DIR}/XMDFConfig.cmake"
-  DESTINATION "lib/cmake/XMDF-${XMDF_VERSION_STRING}"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/XMDF-${XMDF_VERSION_STRING}"
   COMPONENT dev
 )
 
 INSTALL(
   FILES "${XMDF_BINARY_DIR}/XMDFConfigVersion.cmake"
-  DESTINATION "lib/cmake/XMDF-${XMDF_VERSION_STRING}"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/XMDF-${XMDF_VERSION_STRING}"
   COMPONENT dev
 )
